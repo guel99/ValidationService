@@ -6,12 +6,13 @@ import lombok.NonNull;
 
 import java.util.List;
 
-@Data
+
 /**
  * The SignaturePtr component is used to point to a
  * signature in an input (for a verify request) or output
  * (for a sign response) document in which a signature is enveloped
  */
+@Data
 public class XAdESSignaturePtrType {
 
     /**

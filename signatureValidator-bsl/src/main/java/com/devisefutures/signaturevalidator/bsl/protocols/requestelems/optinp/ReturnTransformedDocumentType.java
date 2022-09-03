@@ -1,6 +1,7 @@
 package com.devisefutures.signaturevalidator.bsl.protocols.requestelems.optinp;
 
 import lombok.Data;
+import lombok.NonNull;
 
 /**
  * The ReturnTransformedDocument component instructs the server to return an input document to
@@ -13,5 +14,6 @@ import lombok.Data;
 @Data
 public class ReturnTransformedDocumentType {
 
+    @NonNull
     private int whichRef;
 }

@@ -51,35 +51,45 @@ public class RequestParserService {
             // a assinatura encontra-se no sigObj container
             if(signatureObject == null)
                 throw new MalformedRequestException("No signature element for many signed files");
-            documentValidator = SignedDocumentValidator.fromDocument(new InMemoryDocument(Base64.decode(signatureObject.getB64Sig().getVal())));
-            processMultipleInputDocsCAdESOrXAdES(inputDocuments, documentValidator);
+            try {
+                documentValidator = SignedDocumentValidator.fromDocument(new InMemoryDocument(Base64.decode(signatureObject.getB64Sig().getVal())));
+                processMultipleInputDocsCAdESOrXAdES(inputDocuments, documentValidator);
+            } catch (UnsupportedOperationException e) { throw new MalformedRequestException(e.getMessage()); }
         }
         else if(inputDocuments.getNumDoc() + inputDocuments.getNumDocHash() == 1){
             if(inputDocuments.getNumDoc() == 1 && signatureObject == null){
                 // Enveloped signature (PAdES or XAdES)
-                documentValidator = SignedDocumentValidator
-                        .fromDocument(new InMemoryDocument(Base64.decode(inputDocuments.getDoc().get(0).getB64Data().getVal())));
+                try{
+                    documentValidator = SignedDocumentValidator
+                            .fromDocument(new InMemoryDocument(Base64.decode(inputDocuments.getDoc().get(0).getB64Data().getVal())));
+                } catch (UnsupportedOperationException e) { throw new MalformedRequestException(e.getMessage()); }
             }
             if(inputDocuments.getNumDoc() == 1){
                 // Detached signature; sent original document (XAdES, CAdES, JAdES)
-                if(signatureObject == null)
+                if (signatureObject == null)
                     throw new MalformedRequestException("No mandatory signature element for a detached signature");
-                documentValidator = SignedDocumentValidator.fromDocument(new InMemoryDocument(Base64.decode(signatureObject.getB64Sig().getVal())));
-                processSingleDocumentDetached(inputDocuments, documentValidator);
+                try {
+                    documentValidator = SignedDocumentValidator.fromDocument(new InMemoryDocument(Base64.decode(signatureObject.getB64Sig().getVal())));
+                    processSingleDocumentDetached(inputDocuments, documentValidator);
+                } catch (UnsupportedOperationException e) { throw new MalformedRequestException(e.getMessage()); }
             }
             if(inputDocuments.getNumDocHash() == 1){
                 // Detached signature; the signed document DIGEST was sent separated from the signature (XAdES, CAdES, JAdES)
                 if(signatureObject == null)
                     throw new MalformedRequestException("No mandatory signature element for a detached signature");
-                documentValidator = SignedDocumentValidator.fromDocument(new InMemoryDocument(Base64.decode(signatureObject.getB64Sig().getVal())));
-                processSingleHashDocDetached(inputDocuments, documentValidator);
+                try {
+                    documentValidator = SignedDocumentValidator.fromDocument(new InMemoryDocument(Base64.decode(signatureObject.getB64Sig().getVal())));
+                    processSingleHashDocDetached(inputDocuments, documentValidator);
+                } catch (UnsupportedOperationException e) { throw new MalformedRequestException(e.getMessage()); }
             }
         }
         else{
             // The document input container is empty: envelopping signature
             if(signatureObject == null)
                 throw new MalformedRequestException("No mandatory signature element for an enveloping signature");
-            documentValidator = SignedDocumentValidator.fromDocument(new InMemoryDocument(Base64.decode(signatureObject.getB64Sig().getVal())));
+            try {
+                documentValidator = SignedDocumentValidator.fromDocument(new InMemoryDocument(Base64.decode(signatureObject.getB64Sig().getVal())));
+            } catch (UnsupportedOperationException e) { throw new MalformedRequestException(e.getMessage()); }
         }
         return documentValidator;
     }

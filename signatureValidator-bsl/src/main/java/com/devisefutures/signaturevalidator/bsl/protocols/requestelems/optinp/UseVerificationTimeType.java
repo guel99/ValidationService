@@ -16,7 +16,7 @@ public class UseVerificationTimeType {
      * boolean. Its default value is 'false'. This element instructs the server to use its current time
      * (normally the time associated with the server-side request processing)
      */
-    private boolean currTime;
+    private boolean currTime = false;
 
     /**
      * ]The optional SpecificTime element MUST contain one instance of a

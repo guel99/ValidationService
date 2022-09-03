@@ -18,19 +18,13 @@ public class ValidationController {
     private ValidationService validationService;
 
     @PostMapping(value = "/validate", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> validateSignature(@Valid @RequestBody ValidationRequest validationRequest) {
-        try {
+    public ResponseEntity<?> validateSignature(@Valid @RequestBody ValidationRequest validationRequest) throws MalformedRequestException, ValidationException {
             return ResponseEntity.ok(validationService.validate(validationRequest));
-        } catch (MalformedRequestException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (ValidationException e){
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
     }
 
-    @GetMapping(value = "/hello")
-    public String hello(){
-        return "Hello world";
+    @GetMapping(value = "/connection/test")
+    public ResponseEntity<String> hello(){
+        return ResponseEntity.ok("The service is up!");
     }
 
 }
