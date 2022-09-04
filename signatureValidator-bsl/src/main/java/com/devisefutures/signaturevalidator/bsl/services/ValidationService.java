@@ -9,12 +9,8 @@ import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.ValidationException;
-import javax.xml.transform.TransformerException;
-import java.io.IOException;
 
 @Service
 public class ValidationService {

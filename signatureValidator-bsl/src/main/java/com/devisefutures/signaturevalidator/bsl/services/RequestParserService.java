@@ -119,7 +119,7 @@ public class RequestParserService {
      */
     public boolean hasCertificateSourceInfo(OptionalInputs optInp){
 
-        return (optInp.getAddKeyInfo() != null &&
+        return (optInp != null && optInp.getAddKeyInfo() != null &&
                 optInp.getAddKeyInfo().stream().filter(keyInfo -> keyInfo.getCert() != null).collect(Collectors.toList()).size() != 0);
     }
 

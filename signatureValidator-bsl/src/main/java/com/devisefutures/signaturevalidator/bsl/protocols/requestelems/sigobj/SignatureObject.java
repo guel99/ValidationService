@@ -3,6 +3,7 @@ package com.devisefutures.signaturevalidator.bsl.protocols.requestelems.sigobj;
 import com.devisefutures.signaturevalidator.bsl.protocols.requestelems.Base64DataType;
 import com.devisefutures.signaturevalidator.bsl.protocols.requestelems.optinp.DocumentBaseType;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
  * Component that contains a signature or timestamp of some sort
  */
 @Data
+@NoArgsConstructor
 public class SignatureObject {
 
     /**

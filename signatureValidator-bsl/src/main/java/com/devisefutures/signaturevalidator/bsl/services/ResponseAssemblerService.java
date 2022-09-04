@@ -2,9 +2,7 @@ package com.devisefutures.signaturevalidator.bsl.services;
 
 import com.devisefutures.signaturevalidator.bsl.protocols.ValidationResponse;
 import com.devisefutures.signaturevalidator.bsl.protocols.requestelems.Base64DataType;
-import com.devisefutures.signaturevalidator.bsl.protocols.responseelems.OtherReport;
-import com.devisefutures.signaturevalidator.bsl.protocols.responseelems.ResultMajor;
-import com.devisefutures.signaturevalidator.bsl.protocols.responseelems.ValReportContainerType;
+import com.devisefutures.signaturevalidator.bsl.protocols.responseelems.*;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -50,7 +48,7 @@ public class ResponseAssemblerService {
     public ValidationResponse buildResponse(String reqId, Reports validationResult) throws ValidationException {
         ValidationResponse response = new ValidationResponse();
         response.setReqId(reqId);
-        response.getResult().setMaj(ResultMajor.SUCCESS.name());
+        response.setResult(new Result(ResultMajor.SUCCESS.name()));
         String reportsZipContent = zipSecundaryReports(validationResult);
 
         ValidationReportType etsiValidationReport = validationResult.getEtsiValidationReportJaxb();
@@ -58,7 +56,8 @@ public class ResponseAssemblerService {
             String etsiValidationReportStr = ValidationReportFacade.newFacade().marshall(etsiValidationReport);
             String etsiValidationReportB64 = Base64.toBase64String(etsiValidationReportStr.getBytes());
 
-            ValReportContainerType validationReport = response.getOptOutp().getValidationReport();
+            response.setOptOutp(new OptionalOutputsVerify());
+            ValReportContainerType validationReport = new ValReportContainerType();
             validationReport.setEtsiTS11910202XMLReport(etsiValidationReportB64);
 
             Base64DataType base64DataType = new Base64DataType();
@@ -68,6 +67,8 @@ public class ResponseAssemblerService {
             validationReport.setOther(otherReport);
 
             validationReport.setSigned(etsiValidationReport.getSignature() != null);
+
+            response.getOptOutp().setValidationReport(validationReport);
 
             return response;
         } catch (JAXBException | IOException | SAXException e){

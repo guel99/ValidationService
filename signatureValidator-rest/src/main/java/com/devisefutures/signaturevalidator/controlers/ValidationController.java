@@ -18,6 +18,7 @@ public class ValidationController {
     private ValidationService validationService;
 
     @PostMapping(value = "/validate", consumes = "application/json", produces = "application/json")
+    @CrossOrigin(origins = "${webform.origin}")
     public ResponseEntity<?> validateSignature(@Valid @RequestBody ValidationRequest validationRequest) throws MalformedRequestException, ValidationException {
             return ResponseEntity.ok(validationService.validate(validationRequest));
     }

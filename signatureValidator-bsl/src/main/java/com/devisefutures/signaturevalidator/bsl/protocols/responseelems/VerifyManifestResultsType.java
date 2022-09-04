@@ -1,6 +1,7 @@
 package com.devisefutures.signaturevalidator.bsl.protocols.responseelems;
 
 import lombok.Data;
+import lombok.NonNull;
 
 import java.util.List;
 
@@ -12,5 +13,6 @@ import java.util.List;
 @Data
 public class VerifyManifestResultsType {
 
+    @NonNull
     private List<ManifestResultType> signedRef;
 }

@@ -3,6 +3,7 @@ package com.devisefutures.signaturevalidator.bsl.protocols.responseelems;
 import com.devisefutures.signaturevalidator.bsl.annotations.EnumValidator;
 import com.devisefutures.signaturevalidator.bsl.protocols.requestelems.NsPrefixMappingType;
 import lombok.Data;
+import lombok.NonNull;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class ManifestResultType {
      * This element identifies the manifest reference, in the XML signature, to which this result
      * pertains
      */
+    @NonNull
     private String xPath;
 
     /**
@@ -22,6 +24,7 @@ public class ManifestResultType {
      * urn:oasis:names:tc:dss:1.0:manifeststatus:Invalid
      * This element indicates the manifest validation outcome
      */
+    @NonNull
     @EnumValidator(enumClazz = ManifestResultTypeStatus.class)
     private String status;
 

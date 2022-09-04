@@ -2,6 +2,7 @@ package com.devisefutures.signaturevalidator.bsl.protocols.requestelems.optinp;
 
 import com.devisefutures.signaturevalidator.bsl.protocols.requestelems.indocs.DocumentType;
 import lombok.Data;
+import lombok.NonNull;
 
 /**
  * The TransformedDocument component contains a document corresponding to the specified
@@ -10,7 +11,9 @@ import lombok.Data;
 @Data
 public class TransformedDocumentType {
 
+    @NonNull
     private DocumentType doc;
 
+    @NonNull
     private int whichRef;
 }
