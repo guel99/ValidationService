@@ -1,10 +1,9 @@
-package com.devisefutures.signaturevalidator.bsl.annotations;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.devisefutures.signaturevalidator.common.annotations;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EnumValidatorImpl implements ConstraintValidator<EnumValidator, String> {
 

@@ -1,6 +1,6 @@
 package com.devisefutures.signaturevalidator.bsl.protocols.responseelems;
 
-import com.devisefutures.signaturevalidator.bsl.annotations.EnumValidator;
+import com.devisefutures.signaturevalidator.common.annotations.EnumValidator;
 import lombok.Data;
 import lombok.NonNull;
 

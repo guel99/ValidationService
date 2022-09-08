@@ -6,6 +6,10 @@
 	<modules>
 		<module>signatureValidator-bsl</module>
 		<module>signatureValidator-rest</module>
+		<module>policyService-rest</module>
+		<module>policyService-bsl</module>
+		<module>policyService-DAO</module>
+		<module>vs-Common</module>
 	</modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>

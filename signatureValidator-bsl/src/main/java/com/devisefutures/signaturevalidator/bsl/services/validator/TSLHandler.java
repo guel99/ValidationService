@@ -42,6 +42,12 @@ public class TSLHandler {
     @Value("${tslHandler.onlineLoaderExpirationTimeOfCache}")
     private long onlineLoaderExpirationTimeOfCache;
 
+    /**
+     * The certificate source obtained by the
+     * instance of TSLHandler
+     */
+    private TrustedListsCertificateSource certificateSource;
+
     @PostConstruct
     private void init(){
         File root = new File(System.getProperty("java.io.tmpdir"));
@@ -115,7 +121,6 @@ public class TSLHandler {
         DSSFileLoader offlineFileLoader = buildOfflineLoader();
         job.setOfflineDataLoader(offlineFileLoader);
         job.setOnlineDataLoader(buildOnlineLoader());
-        job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
         job.setSynchronizationStrategy(new AcceptAllStrategy());
         job.setCacheCleaner(buildCacheCleaner(offlineFileLoader));
         job.setListOfTrustedListSources(this.getLOTL(lotlURL));
