@@ -1,8 +1,6 @@
 package com.devisefutures.policyservice.bsl.protocols;
 
-import com.devisefutures.policyservice.bsl.protocols.requestelems.ContainerConstraintsDTO;
-import com.devisefutures.policyservice.bsl.protocols.requestelems.SignatureConstraintsDTO;
-import com.devisefutures.policyservice.bsl.protocols.requestelems.TimeStampConstraintsDTO;
+import com.devisefutures.policyservice.bsl.protocols.requestelems.*;
 import lombok.Data;
 
 @Data
@@ -37,6 +35,12 @@ public class ValidationPolicyRequest {
      * Constraints related to the revocation data
      */
     private RevocationConstraintsDTO revocationConstraints;
+
+    /**
+     * Global constraints about cryptographic usage (encryption, digest, key length, algorithm deprecation,...).
+     * If no specific constraints is added in Signature/Timestamp/... elements, this configuration will be used.
+     */
+    private CryptographicConstraintDTO cryptographicConstraint;
 
     /**
      * Checks / Defines the validation model shell, chain or hybrid
