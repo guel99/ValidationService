@@ -1,12 +1,10 @@
 package com.devisefutures.policyservice.bsl.protocols.requestelems;
 
+import com.devisefutures.policyservice.bsl.protocols.annotations.MultiValuesEnumValidator;
 import com.devisefutures.signaturevalidator.common.annotations.EnumValidator;
-import com.devisefutures.signaturevalidator.common.annotations.ListStrEnumValidator;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class ContainerConstraintsDTO {
@@ -14,8 +12,8 @@ public class ContainerConstraintsDTO {
     /**
      * Default: Serão aceites quais tipos de container: ASiC-S e ASiC-E.
      */
-    @ListStrEnumValidator(enumClazz = ASiCContainerType.class)
-    private List<String> acceptableContainerTypes;
+    @MultiValuesEnumValidator(enumClazz = ASiCContainerType.class)
+    private MultiValuesConstraintDTO acceptableContainerTypes;
 
     /**
      * Para além dos mimetypes que definem o media type dos containers,
@@ -26,8 +24,8 @@ public class ContainerConstraintsDTO {
      *
      * Default: Serão apenas considerados os media types já mencionados.
      */
-    private List<String> additionalAcceptableMimeTypeFileContent;
+    private MultiValuesConstraintDTO additionalAcceptableMimeTypeFileContent;
 
     @EnumValidator(enumClazz = Level.class)
-    private String allFilesSIgned;
+    private String allFilesSigned;
 }

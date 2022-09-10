@@ -1,11 +1,9 @@
 package com.devisefutures.policyservice.bsl.protocols.requestelems;
 
 import com.devisefutures.signaturevalidator.common.annotations.EnumValidator;
-import com.devisefutures.signaturevalidator.common.annotations.ListStrEnumValidator;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import lombok.Data;
 
-import java.util.List;
 
 /**
  * Group of common checks for any kind of signed token
@@ -52,15 +50,13 @@ public class BasicSignatureConstraintsDTO {
      * Checks if the related trust service type identifier is
      * in the acceptable values list
      */
-    @ListStrEnumValidator(enumClazz = Level.class)
-    private List<String> trustServiceTypeIdentifier;
+    private MultiValuesConstraintDTO trustedServiceTypeIdentifier;
 
     /**
      * Checks if the related trust service status is in the
      * acceptable values list
      */
-    @ListStrEnumValidator(enumClazz = Level.class)
-    private List<String> trustServiceStatus;
+    private MultiValuesConstraintDTO trustedServiceStatus;
 
     /**
      * Group of checks to operate on the signing certificate

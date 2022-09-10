@@ -1,6 +1,8 @@
 package com.devisefutures.policyservice.bsl.protocols.requestelems;
 
+import com.devisefutures.signaturevalidator.common.annotations.EnumValidator;
 import eu.europa.esig.dss.policy.jaxb.Algo;
+import eu.europa.esig.dss.policy.jaxb.Level;
 import lombok.Data;
 
 import java.util.List;
@@ -12,19 +14,25 @@ import java.util.List;
 public class CryptographicConstraintDTO {
 
     /**
-     * Checks if the encryption algorithm is in the allowed values
      * Checks if the key length for the encryption is acceptable
      */
     private List<Algo> acceptableEncryptionAlgo;
 
     /**
      * Checks if the digest algorithm is in the allowed values
-     * Checks if the key length for the encryption is acceptable
      */
     private List<Algo> acceptableDigestAlgo;
 
     /**
+     * Checks if the digest algorithm is in the allowed values
+     */
+    private List<Algo> miniPublicKeySize;
+
+    /**
      * Date format for expiration dates
      */
-    private String dateFormat;
+    private AlgoExpirationDateDTO algoExpirationDate;
+
+    @EnumValidator(enumClazz = Level.class)
+    private String level;
 }

@@ -1,7 +1,6 @@
 package com.devisefutures.policyservice.bsl.protocols.requestelems;
 
 import com.devisefutures.signaturevalidator.common.annotations.EnumValidator;
-import com.devisefutures.signaturevalidator.common.annotations.ListStrEnumValidator;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import lombok.Data;
 
@@ -23,8 +22,7 @@ public class SignatureConstraintsDTO {
      * Checks if used signature policy is in the
      * acceptable values list
      */
-    @ListStrEnumValidator(enumClazz = Level.class)
-    private List<String> acceptablePolicies;
+    private MultiValuesConstraintDTO acceptablePolicies;
 
     /**
      * Checks the availability of the signature policy (PDF resource,...)
@@ -49,8 +47,7 @@ public class SignatureConstraintsDTO {
      * Checks if signature format (XAdES-BASELINE-B,...)
      * is in the acceptable values list
      */
-    @ListStrEnumValidator(enumClazz = Level.class)
-    private List<String> acceptableFormats;
+    private MultiValuesConstraintDTO acceptableFormats;
 
     /**
      * Checks if the signature cover the complete document

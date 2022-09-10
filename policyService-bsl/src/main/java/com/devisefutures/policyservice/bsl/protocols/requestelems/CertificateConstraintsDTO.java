@@ -1,12 +1,11 @@
 package com.devisefutures.policyservice.bsl.protocols.requestelems;
 
+import com.devisefutures.policyservice.bsl.protocols.annotations.MultiValuesEnumValidator;
 import com.devisefutures.signaturevalidator.common.annotations.EnumValidator;
-import com.devisefutures.signaturevalidator.common.annotations.ListStrEnumValidator;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import lombok.Data;
 
-import java.util.List;
 
 /**
  * Group of checks related to a certificate
@@ -90,50 +89,50 @@ public class CertificateConstraintsDTO {
     /**
      * Checks if the certificate's key usages are in the acceptable values list
      */
-    @ListStrEnumValidator(enumClazz = KeyUsageBit.class)
-    private List<String> keyUsage;
+    @MultiValuesEnumValidator(enumClazz = KeyUsageBit.class)
+    private MultiValuesConstraintDTO keyUsage;
 
     /**
      * Checks if the certificate's extended key usages are in
      * the acceptable values list
      */
-    @ListStrEnumValidator(enumClazz = KeyUsageBit.class)
-    private List<String> extendedKeyUsage;
+    @MultiValuesEnumValidator(enumClazz = KeyUsageBit.class)
+    private MultiValuesConstraintDTO extendedKeyUsage;
 
     /**
      * Checks if the certificate's surname is in the acceptable values list
      */
-    private List<String> surname;
+    private MultiValuesConstraintDTO surname;
 
     /**
      * Checks if the certificate's given name is in the acceptable values list
      */
-    private List<String> givenName;
+    private MultiValuesConstraintDTO givenName;
 
     /**
      * Checks if the certificate's common name is in the acceptable values list
      */
-    private List<String> commonName;
+    private MultiValuesConstraintDTO commonName;
 
     /**
      * Checks if the certificate's pseudonym is in the acceptable values list
      */
-    private List<String> pseudonym;
+    private MultiValuesConstraintDTO pseudonym;
 
     /**
      * Checks if the certificate's organization unit is in the acceptable values list
      */
-    private List<String> organizationUnit;
+    private MultiValuesConstraintDTO organizationUnit;
 
     /**
      * Checks if the certificate's organization name is in the acceptable values list
      */
-    private List<String> organizationName;
+    private MultiValuesConstraintDTO organizationName;
 
     /**
      * Checks if the certificate's country is in the acceptable values list
      */
-    private List<String> country;
+    private MultiValuesConstraintDTO country;
 
     /**
      * Checks the presence of the serial number for the current certificate
@@ -176,8 +175,7 @@ public class CertificateConstraintsDTO {
     /**
      * Checks if the certificate policy id is in the acceptable values list
      */
-    @EnumValidator(enumClazz = Level.class)
-    private List<String> policyIds;
+    private MultiValuesConstraintDTO policyIds;
 
     /**
      * Checks if the certificate is issued for a natural person (no TL overrule)
@@ -195,8 +193,7 @@ public class CertificateConstraintsDTO {
      * Checks if the certificate's SemanticsIdentifier has a value from the
      * acceptable values list
      */
-    @EnumValidator(enumClazz = Level.class)
-    private String semanticsIdentifier;
+    private MultiValuesConstraintDTO semanticsIdentifier;
 
     /**
      * Checks if the certificate use a pseudonym
