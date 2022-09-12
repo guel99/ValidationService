@@ -1,11 +1,9 @@
 package com.devisefutures.policyservice.bsl.services;
 
 import com.devisefutures.policyservice.bsl.mappers.ConstraintsParametersMapper;
-import com.devisefutures.policyservice.bsl.mappers.LevelConstraintMapper;
 import com.devisefutures.policyservice.bsl.protocols.ValidationPolicyRequest;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import org.bouncycastle.util.encoders.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

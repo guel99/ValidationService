@@ -1,5 +1,6 @@
 package com.devisefutures.policyservice.bsl.services;
 
+import com.devisefutures.policyservice.bsl.protocols.ValidationPolicyResponse;
 import org.apache.commons.io.FileExistsException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.security.AccessControlException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -51,16 +53,19 @@ public class PolicyStoreService {
      * stored policy file
      * @throws FileNotFoundException if the policy file cannot be created
      */
-    public UUID storePolicy(String content) throws FileNotFoundException {
+    public ValidationPolicyResponse storePolicy(String content) throws FileNotFoundException {
+        ValidationPolicyResponse validationPolicyResponse = new ValidationPolicyResponse();
         UUID policyAttributedId;
         do {
             policyAttributedId = UUID.randomUUID();
         } while (attributedIds.contains(policyAttributedId.toString()));
+        validationPolicyResponse.setPolicyId(policyAttributedId.toString());
+        validationPolicyResponse.setTimestamp(LocalDateTime.now().toString());
         File newPolicy = new File(policyDirPath + policyAttributedId);
         PrintWriter out = new PrintWriter(new FileOutputStream(newPolicy));
         out.print(content);
         out.flush();
         out.close();
-        return policyAttributedId;
+        return validationPolicyResponse;
     }
 }
