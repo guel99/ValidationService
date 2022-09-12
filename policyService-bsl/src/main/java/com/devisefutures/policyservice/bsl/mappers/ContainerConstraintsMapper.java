@@ -2,7 +2,6 @@ package com.devisefutures.policyservice.bsl.mappers;
 
 import com.devisefutures.policyservice.bsl.mappers.enums.AdditionalDataType;
 import com.devisefutures.policyservice.bsl.protocols.requestelems.ContainerConstraintsDTO;
-import com.devisefutures.policyservice.bsl.protocols.requestelems.MultiValuesConstraintDTO;
 import eu.europa.esig.dss.policy.jaxb.ContainerConstraints;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

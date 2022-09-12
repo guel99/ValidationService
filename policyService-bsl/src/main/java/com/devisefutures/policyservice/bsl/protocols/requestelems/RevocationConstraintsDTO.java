@@ -40,4 +40,8 @@ public class RevocationConstraintsDTO {
      * Group of common checks on this token signature
      */
     private BasicSignatureConstraintsDTO basicSignatureConstraints;
+
+
+    @EnumValidator(enumClazz = Level.class)
+    private String level;
 }

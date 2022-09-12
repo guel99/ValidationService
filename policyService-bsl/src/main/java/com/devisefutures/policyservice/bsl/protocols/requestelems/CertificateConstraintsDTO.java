@@ -181,7 +181,7 @@ public class CertificateConstraintsDTO {
      * Checks if the certificate is issued for a natural person (no TL overrule)
      */
     @EnumValidator(enumClazz = Level.class)
-    private String issuedToNeutralPerson;
+    private String issuedToNaturalPerson;
 
     /**
      * Checks if the certificate is issued for a legal person (no TL overrule)

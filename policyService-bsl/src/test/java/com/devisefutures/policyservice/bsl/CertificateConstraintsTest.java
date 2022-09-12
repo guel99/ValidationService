@@ -52,7 +52,7 @@ public class CertificateConstraintsTest {
         certificateConstraintsDTO.setAcceptableRevocationDataFound("FAIL");
         certificateConstraintsDTO.setAuthorityInfoAccessPresent("WARN");
         certificateConstraintsDTO.setCrlNextUpdatePresent("FAIL");
-        certificateConstraintsDTO.setIssuedToNeutralPerson("FAIL");
+        certificateConstraintsDTO.setIssuedToNaturalPerson("FAIL");
         certificateConstraintsDTO.setNotExpired("FAIL");
         certificateConstraintsDTO.setOcspNextUpdatePresent("FAIL");
         certificateConstraintsDTO.setRecognition("FAIL");

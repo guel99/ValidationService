@@ -1,5 +1,6 @@
 package com.devisefutures.policyservice.bsl.protocols.requestelems;
 
+import com.devisefutures.policyservice.bsl.protocols.annotations.MultiValuesEnumValidator;
 import com.devisefutures.signaturevalidator.common.annotations.EnumValidator;
 import com.devisefutures.signaturevalidator.common.annotations.ListStrEnumValidator;
 import eu.europa.esig.dss.policy.jaxb.Level;
@@ -119,8 +120,8 @@ public class SignedAttributesConstraintsDTO {
     /**
      * Checks if CommitmentTypeIndication is in the acceptable values list
      */
-    @ListStrEnumValidator(enumClazz = Level.class)
-    private List<String> commitmentTypeIndication;
+    @MultiValuesEnumValidator(enumClazz = Level.class)
+    private MultiValuesConstraintDTO commitmentTypeIndication;
 
     /**
      * Checks the presence of the production/localization attribute
@@ -131,14 +132,14 @@ public class SignedAttributesConstraintsDTO {
     /**
      * Checks if claimed role is in the acceptable values list
      */
-    @ListStrEnumValidator(enumClazz = Level.class)
-    private List<String> claimedRoles;
+    @MultiValuesEnumValidator(enumClazz = Level.class)
+    private MultiValuesConstraintDTO claimedRoles;
 
     /**
      * Checks if certified role is in the acceptable values list
      */
-    @ListStrEnumValidator(enumClazz = Level.class)
-    private List<String> certifiedRoles;
+    @MultiValuesEnumValidator(enumClazz = Level.class)
+    private MultiValuesConstraintDTO certifiedRoles;
 
     /**
      * Checks the presence of a content-timestamp attribute

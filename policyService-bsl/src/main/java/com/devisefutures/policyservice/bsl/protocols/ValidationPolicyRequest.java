@@ -1,6 +1,7 @@
 package com.devisefutures.policyservice.bsl.protocols;
 
 import com.devisefutures.policyservice.bsl.protocols.requestelems.*;
+import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import lombok.Data;
 
 @Data
@@ -51,4 +52,9 @@ public class ValidationPolicyRequest {
      * Constraints related to the European context (trusted list validity,...)
      */
     private EIDASDTO eIDAS;
+
+    /**
+     * The policy Name
+     */
+    private String name;
 }
