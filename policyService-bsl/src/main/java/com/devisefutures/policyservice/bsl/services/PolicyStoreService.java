@@ -1,15 +1,13 @@
 package com.devisefutures.policyservice.bsl.services;
 
-import com.devisefutures.policyservice.bsl.protocols.ValidationPolicyResponse;
+import com.devisefutures.policyservice.bsl.protocols.ValidationPolicyCreationResponse;
+import com.devisefutures.policyservice.bsl.protocols.ValidationPolicyGetResponse;
 import org.apache.commons.io.FileExistsException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.security.AccessControlException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,7 +34,7 @@ public class PolicyStoreService {
         File mainDir = new File(policyDirPath);
         if(mainDir.exists() && mainDir.isFile())
             throw new FileExistsException("A file with path '" + policyDirPath + "' already exists. Change the name on application.properties");
-        if(mainDir.mkdir()){
+        if(mainDir.exists() || mainDir.mkdir()){
             File[] files = mainDir.listFiles();
             assert files != null;
             for (File file : files)
@@ -53,8 +51,8 @@ public class PolicyStoreService {
      * stored policy file
      * @throws FileNotFoundException if the policy file cannot be created
      */
-    public ValidationPolicyResponse storePolicy(String content) throws FileNotFoundException {
-        ValidationPolicyResponse validationPolicyResponse = new ValidationPolicyResponse();
+    public ValidationPolicyCreationResponse storePolicy(String content) throws FileNotFoundException {
+        ValidationPolicyCreationResponse validationPolicyResponse = new ValidationPolicyCreationResponse();
         UUID policyAttributedId;
         do {
             policyAttributedId = UUID.randomUUID();
@@ -66,6 +64,33 @@ public class PolicyStoreService {
         out.print(content);
         out.flush();
         out.close();
+        attributedIds.add(policyAttributedId.toString());
         return validationPolicyResponse;
+    }
+
+    /**
+     * Gets a policy with a specific uuid
+     * @param id The policy attributed uuid on the policy creation
+     * @return The ValidationPolicyGetResponse
+     * @throws IOException when some io error occurs
+     * @throws FileNotFoundException when this id is not attributed
+     */
+    public ValidationPolicyGetResponse getPolicy(String id) throws IOException {
+        if(attributedIds.contains(id)){
+            File policyFile = new File(policyDirPath + id);
+            if(policyFile.exists() && policyFile.isFile()){
+                ValidationPolicyGetResponse validationPolicyGetResponse = new ValidationPolicyGetResponse();
+                validationPolicyGetResponse.setPolicyId(id);
+                BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(policyFile)));
+                String b64Policy = in.readLine();
+                in.close();
+                validationPolicyGetResponse.setPolicyXmlB64(b64Policy);
+                return validationPolicyGetResponse;
+            }
+            else
+                throw new FileNotFoundException("The specified policy does not exist");
+        }
+        else
+            throw new FileNotFoundException("The specified policy does not exist");
     }
 }

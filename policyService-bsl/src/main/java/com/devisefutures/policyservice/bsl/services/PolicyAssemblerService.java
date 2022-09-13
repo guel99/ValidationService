@@ -2,6 +2,8 @@ package com.devisefutures.policyservice.bsl.services;
 
 import com.devisefutures.policyservice.bsl.mappers.ConstraintsParametersMapper;
 import com.devisefutures.policyservice.bsl.protocols.ValidationPolicyRequest;
+import com.devisefutures.policyservice.bsl.services.defaultrules.DefaultContainerConstraintsService;
+import com.devisefutures.policyservice.bsl.services.defaultrules.DefaultSignatureConstraintsService;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import org.bouncycastle.util.encoders.Base64;
@@ -12,7 +14,6 @@ import org.xml.sax.SAXException;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 /**
  * Provides functionality to xml policy file creation
@@ -20,10 +21,22 @@ import java.util.List;
 @Service
 public class PolicyAssemblerService {
 
-    private static final List<String> DEFAULT_ACCEPTABLE_CONTAINERS = List.of("application/vnd.etsi.asic-e+zip", "application/vnd.etsi.asic-s+zip");
-
     @Autowired
     private ConstraintsParametersMapper constraintsParametersMapper;
+
+    /**
+     * Provides the default fields in the policy creation
+     * process for container constraints properties
+     */
+    @Autowired
+    private DefaultContainerConstraintsService defaultContainerConstraintsService;
+
+    /**
+     * Provides the default fields in the policy creation
+     * process for signature constraints properties
+     */
+    @Autowired
+    private DefaultSignatureConstraintsService defaultSignatureConstraintsService;
 
     /**
      * Returns a xml validation policy as a base64 encoded string
@@ -31,7 +44,11 @@ public class PolicyAssemblerService {
      */
     public String assemble(ValidationPolicyRequest request) throws JAXBException, IOException, SAXException {
         ConstraintsParameters constraintsParameters = constraintsParametersMapper.toConstraintsParameters(request);
-        constraintsParameters.getContainerConstraints().getAcceptableContainerTypes().getId().addAll(DEFAULT_ACCEPTABLE_CONTAINERS);
+
+        /* Set the empty/non-editable parameters in the validation policy already created */
+        constraintsParameters.setContainerConstraints(defaultContainerConstraintsService.setDefaultRules(constraintsParameters.getContainerConstraints()));
+        constraintsParameters.setSignatureConstraints(defaultSignatureConstraintsService.setDefaultRules(constraintsParameters.getSignatureConstraints()));
+
         String xmlString = ValidationPolicyFacade.newFacade().marshall(constraintsParameters);
         return Base64.toBase64String(xmlString.getBytes(StandardCharsets.UTF_8));
     }

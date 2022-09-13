@@ -6,7 +6,7 @@ import lombok.Data;
  * The response sent to the user in case of success
  */
 @Data
-public class ValidationPolicyResponse {
+public class ValidationPolicyCreationResponse {
 
     /**
      * The id of generated policy file
