@@ -1,15 +1,16 @@
 package com.devisefutures.policyservice.bsl.protocols;
 
 import com.devisefutures.policyservice.bsl.protocols.requestelems.*;
-import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
-import lombok.Data;
+import lombok.*;
 
 @Data
+@AllArgsConstructor
 public class ValidationPolicyRequest {
 
     /**
      * The validation policy description
      */
+    @NonNull
     private String description;
 
     /**

@@ -114,8 +114,8 @@ public class SignedAttributesConstraintsDTO {
      * Verifies whether the size of the elliptic curve key used to create
      * the signature corresponds to the defined signature algorithm (see RFC 7518)
      */
-    @EnumValidator(enumClazz = Level.class)
-    private String ellipticCurveKeySize;
+    //@EnumValidator(enumClazz = Level.class)
+    //private String ellipticCurveKeySize;
 
     /**
      * Checks if CommitmentTypeIndication is in the acceptable values list
