@@ -10,7 +10,8 @@
 		<module>policyService-bsl</module>
 		<module>policyService-DAO</module>
 		<module>vs-Common</module>
-	</modules>
+        <module>functionalTests</module>
+    </modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
