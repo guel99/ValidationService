@@ -7,6 +7,7 @@ import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -24,6 +25,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,14 +49,36 @@ public class ResponseAssemblerService {
      * @throws ValidationException
      */
     public ValidationResponse buildResponse(String reqId, Reports validationResult) throws ValidationException {
+
+        return buildResponse(reqId, validationResult, null);
+    }
+
+    /**
+     * Builds a response when the validation request was successfully
+     * processed and has returned an ETSI validation report
+     * @param reqId The request's id to which the response corresponds
+     * @param validationResult Container with all reports produced in
+     * @param signedEtsiValReport The signed ETSI validation report
+     * result of validation process application
+     * @return ValidationResponse object
+     * @throws ValidationException
+     */
+    public ValidationResponse buildResponse(String reqId, Reports validationResult, DSSDocument signedEtsiValReport) throws ValidationException {
+
         ValidationResponse response = new ValidationResponse();
         response.setReqId(reqId);
         response.setResult(new Result(ResultMajor.SUCCESS.name()));
         String reportsZipContent = zipSecundaryReports(validationResult);
-
-        ValidationReportType etsiValidationReport = validationResult.getEtsiValidationReportJaxb();
+        String etsiValidationReportStr;
         try {
-            String etsiValidationReportStr = ValidationReportFacade.newFacade().marshall(etsiValidationReport);
+            if (signedEtsiValReport == null) {
+                ValidationReportType etsiValidationReport = validationResult.getEtsiValidationReportJaxb();
+                etsiValidationReportStr = ValidationReportFacade.newFacade().marshall(etsiValidationReport);
+            } else {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                signedEtsiValReport.writeTo(out);
+                etsiValidationReportStr = out.toString(StandardCharsets.UTF_8);
+            }
             String etsiValidationReportB64 = Base64.toBase64String(etsiValidationReportStr.getBytes());
 
             response.setOptOutp(new OptionalOutputsVerify());
@@ -66,13 +91,13 @@ public class ResponseAssemblerService {
             otherReport.setContent(base64DataType);
             validationReport.setOther(otherReport);
 
-            validationReport.setSigned(etsiValidationReport.getSignature() != null);
+            validationReport.setSigned(signedEtsiValReport != null);
 
             response.getOptOutp().setValidationReport(validationReport);
 
             return response;
-        } catch (JAXBException | IOException | SAXException e){
-            throw new ValidationException("Error marshalling etsiValReport");
+        } catch (IOException | JAXBException | SAXException e){
+            throw new ValidationException("Error converting ETSI Validation Report to xml String");
         }
     }
 

@@ -95,6 +95,19 @@ public class RequestParserService {
     }
 
     /**
+     * Indicates the indication for report signing present
+     * in the request message passed as parameter
+     * @param request The ValidationRequest
+     * @return The boolean value that indicates if the
+     * report must or not be signed
+     */
+    public boolean signReport(ValidationRequest request){
+        if(request.getOptInp() == null || request.getOptInp().getReturnValReport() == null)
+            return false;
+        return request.getOptInp().getReturnValReport().isSignIt();
+    }
+
+    /**
      * Gets the certificate source provided in
      * the request to use in the validation process
      * @param optInp The optional inputs container
