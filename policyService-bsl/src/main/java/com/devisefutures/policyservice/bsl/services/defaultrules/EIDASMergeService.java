@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class EIDASMergeService {
 
-    public EIDAS merge(EIDAS eidas, EIDAS baseEIDAS){
+    public static EIDAS merge(EIDAS eidas, EIDAS baseEIDAS){
         if(eidas == null)
             return baseEIDAS;
         if(eidas.getTLFreshness() != null) baseEIDAS.setTLFreshness(eidas.getTLFreshness());

@@ -80,6 +80,7 @@ public class DSSValidationPolicyMergeService {
             modelConstraint.setValue(dssDefaultPolicy.getValidationModel());
             policy.setModel(modelConstraint);
         }
+        policy.setEIDAS(EIDASMergeService.merge(policy.getEIDAS(), dssDefaultPolicy.getEIDASConstraints()));
 
         return policy;
     }
