@@ -35,6 +35,7 @@ public class PolicyController {
     private PolicyStoreService policyStoreService;
 
     @PostMapping(value = "/create/{mode}", consumes = "application/json", produces = "application/json")
+    @CrossOrigin(origins = "${webform.origin}")
     public ResponseEntity<ValidationPolicyCreationResponse> createPolicy(@Valid @RequestBody ValidationPolicyRequest request, @PathVariable String mode)
             throws JAXBException, IOException, SAXException, XMLStreamException, InvalidPolicyCreationModeException {
         String b64Policy = policyAssemblerService.assemble(request, mode);
@@ -42,6 +43,7 @@ public class PolicyController {
     }
 
     @GetMapping(value = "/{policyId}")
+    @CrossOrigin(origins = "${webform.origin}")
     public ResponseEntity<ValidationPolicyGetResponse> getPolicy(@PathVariable String policyId) throws IOException {
         return ResponseEntity.ok(policyStoreService.getPolicy(policyId));
     }
