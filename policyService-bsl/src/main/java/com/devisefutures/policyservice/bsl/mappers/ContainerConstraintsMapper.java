@@ -11,7 +11,6 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = { LevelConstraintMapper.class, MultiValuesConstraintMapper.class })
 public interface ContainerConstraintsMapper {
 
-    @Mapping(source = "additionalAcceptableMimeTypeFileContent", target = "acceptableMimeTypeFileContent")
     ContainerConstraints toContainerConstraints(ContainerConstraintsDTO containerConstraintsDTO);
 
     default ContainerConstraints toContainerConstraints(ContainerConstraintsDTO containerConstraintsDTO, AdditionalDataType type, List<String> additional){
