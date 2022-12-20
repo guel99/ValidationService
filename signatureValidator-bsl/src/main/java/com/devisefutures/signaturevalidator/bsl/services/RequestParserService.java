@@ -13,8 +13,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.bouncycastle.util.encoders.Base64;
@@ -115,11 +115,13 @@ public class RequestParserService {
      * @return The certificate source specified in the message
      */
     public CertificateSource getCertificateSource(OptionalInputs optInp){
-        CertificateSource certificateSource = new TrustedListsCertificateSource();
+        CertificateSource certificateSource = new CommonTrustedCertificateSource();
         if(optInp.getAddKeyInfo() != null) {
             for(AdditionalKeyInfoType keyInfo : optInp.getAddKeyInfo()) {
-                if(keyInfo.getCert() != null)
-                    certificateSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(keyInfo.getCert()));
+                if(keyInfo.getCert() != null) {
+                    String certificate = keyInfo.getCert().replace("\r\n", "");
+                    certificateSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(certificate));
+                }
             }
         }
         return certificateSource;
