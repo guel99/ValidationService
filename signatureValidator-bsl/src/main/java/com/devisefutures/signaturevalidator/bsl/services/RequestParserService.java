@@ -64,7 +64,7 @@ public class RequestParserService {
                             .fromDocument(new InMemoryDocument(Base64.decode(inputDocuments.getDoc().get(0).getB64Data().getVal())));
                 } catch (UnsupportedOperationException e) { throw new MalformedRequestException(e.getMessage()); }
             }
-            if(inputDocuments.getNumDoc() == 1){
+            else if(inputDocuments.getNumDoc() == 1){
                 // Detached signature; sent original document (XAdES, CAdES, JAdES)
                 if (signatureObject == null)
                     throw new MalformedRequestException("No mandatory signature element for a detached signature");
@@ -73,7 +73,7 @@ public class RequestParserService {
                     processSingleDocumentDetached(inputDocuments, documentValidator);
                 } catch (UnsupportedOperationException e) { throw new MalformedRequestException(e.getMessage()); }
             }
-            if(inputDocuments.getNumDocHash() == 1){
+            else if(inputDocuments.getNumDocHash() == 1){
                 // Detached signature; the signed document DIGEST was sent separated from the signature (XAdES, CAdES, JAdES)
                 if(signatureObject == null)
                     throw new MalformedRequestException("No mandatory signature element for a detached signature");
