@@ -1,6 +1,7 @@
 package com.devisefutures.policyservice.bsl.services;
 
 import com.devisefutures.policyservice.bsl.exception.SearchTokenNotFound;
+import com.devisefutures.policyservice.bsl.protocols.RemotePolicyDTO;
 import com.devisefutures.policyservice.bsl.protocols.ValidationPolicyCreationResponse;
 import com.devisefutures.policyservice.bsl.protocols.ValidationPolicyGetResponse;
 import org.apache.commons.io.FileExistsException;
@@ -100,11 +101,14 @@ public class PolicyStoreService {
      * @param policyIdSubStr The substring used to check
      * @return The list of strings that match the one passed as parameter
      */
-    public List<String> search(String policyIdSubStr){
-        List<String> ids = new ArrayList<>();
+    public List<RemotePolicyDTO> search(String policyIdSubStr){
+        List<RemotePolicyDTO> ids = new ArrayList<>();
         for(String id : this.attributedIds){
-            if(id.contains(policyIdSubStr))
-                ids.add(id);
+            if(id.contains(policyIdSubStr)) {
+                // Note: the source value is only setted by the rest-controller
+                RemotePolicyDTO remotePolicyDTO = new RemotePolicyDTO(id,"");
+                ids.add(remotePolicyDTO);
+            }
         }
         if(ids.isEmpty())
             throw new SearchTokenNotFound("Policy not found for the search token '" + policyIdSubStr + "'");
