@@ -1,12 +1,10 @@
 package com.devisefutures.policyservice.controller;
 
-import com.devisefutures.policyservice.bsl.enums.PolicyCreationMode;
 import com.devisefutures.policyservice.bsl.protocols.ValidationPolicyGetResponse;
 import com.devisefutures.policyservice.bsl.protocols.ValidationPolicyRequest;
 import com.devisefutures.policyservice.bsl.protocols.ValidationPolicyCreationResponse;
 import com.devisefutures.policyservice.bsl.services.PolicyAssemblerService;
 import com.devisefutures.policyservice.bsl.services.PolicyStoreService;
-import com.devisefutures.signaturevalidator.common.annotations.EnumValidator;
 import com.devisefutures.signaturevalidator.common.exceptions.InvalidPolicyCreationModeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +15,7 @@ import javax.validation.Valid;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/policy/api")
@@ -46,6 +45,12 @@ public class PolicyController {
     @CrossOrigin(origins = "${webform.origin}")
     public ResponseEntity<ValidationPolicyGetResponse> getPolicy(@PathVariable String policyId) throws IOException {
         return ResponseEntity.ok(policyStoreService.getPolicy(policyId));
+    }
+
+    @GetMapping(value = "/searchFor/{token}")
+    @CrossOrigin(origins = "${webform.origin}")
+    public ResponseEntity<List<String>> search(@PathVariable String token){
+        return ResponseEntity.ok(policyStoreService.search(token));
     }
 
     @GetMapping(value = "/connection/test")
