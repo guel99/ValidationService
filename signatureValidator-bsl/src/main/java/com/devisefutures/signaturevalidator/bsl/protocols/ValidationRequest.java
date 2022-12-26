@@ -6,6 +6,7 @@ import com.devisefutures.signaturevalidator.bsl.protocols.requestelems.sigobj.Si
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class ValidationRequest {
@@ -38,4 +39,9 @@ public class ValidationRequest {
      * of the input documents
      */
     private SignatureObject sigObj;
+
+    /**
+     * The additional inputs that stores data referenced by other parameters inside the ValidationRequest
+     */
+    private Map<String, String> attachment;
 }
