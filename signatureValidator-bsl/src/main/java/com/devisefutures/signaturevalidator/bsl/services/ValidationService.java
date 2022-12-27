@@ -20,7 +20,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.ValidationException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 @Service
@@ -56,18 +59,28 @@ public class ValidationService {
      * specific validation resquest
      * @param request
      */
-    public ValidationResponse validate(ValidationRequest request) throws ValidationException, MalformedRequestException {
-        // TODO - handle exceptions and not throw them
+    public ValidationResponse validate(ValidationRequest request) throws ValidationException, MalformedRequestException, MalformedURLException {
         DocumentValidator toValidate = requestParserService.getToValidateDocuments(request);
         CertificateSource certificateSource = null;
+        InputStream validationPolicy = null;
+        URL validationPolicyURL = null;
+        Reports validationResult = null;
         if(requestParserService.hasCertificateSourceInfo(request.getOptInp()))
             certificateSource = requestParserService.getCertificateSource(request.getOptInp());
 
-        Reports validationResult = certificateSource == null ?
-                validator.validate(toValidate) :
-                validator.validate(toValidate, certificateSource);
-
-
+        if(requestParserService.hasLocalPolicy(request)) {
+            validationPolicy = requestParserService.getLocalPolicyData(request);
+            validationResult = validator.validate(toValidate, certificateSource, validationPolicy);
+        }
+        else if(requestParserService.hasRemotePolicy(request)) {
+            validationPolicyURL = requestParserService.getRemotePolicyURL(request);
+            validationResult = validator.validate(toValidate, certificateSource, validationPolicyURL);
+        }
+        else { // If no policy is specified in the request
+            validationResult = certificateSource == null ?
+                    validator.validate(toValidate) :
+                    validator.validate(toValidate, certificateSource);
+        }
         try {
             String etsiReportStr = ValidationReportFacade.newFacade().marshall(validationResult.getEtsiValidationReportJaxb());
             DSSDocument toBeSignedReport = new InMemoryDocument(etsiReportStr.getBytes(StandardCharsets.UTF_8));

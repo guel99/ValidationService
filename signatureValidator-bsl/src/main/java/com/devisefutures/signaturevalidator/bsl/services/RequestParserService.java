@@ -22,6 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -193,5 +196,54 @@ public class RequestParserService {
         detachedContent.add(dssDocument);
         signatureDoc.setDetachedContents(detachedContent);
         return signatureDoc;
+    }
+
+    /**
+     * Tells if the given request as specified a validation
+     * policy to be applied by the validation process
+     * @param request The request to check the presence/indication of a validation policy
+     * @return The boolean
+     */
+    public boolean hasPolicy(ValidationRequest request){
+        List<String> policies = request.getOptInp().getPolicy();
+        return policies != null && !policies.isEmpty();
+    }
+
+    /**
+     * Tells if the given request as specified a validation
+     * policy to be applied by the validation process, uploaded from the user's machine
+     * @param request The request to check the presence/indication of a validation policy
+     * @return The boolean
+     */
+    public boolean hasLocalPolicy(ValidationRequest request){
+        List<String> policies = request.getOptInp().getPolicy();
+        return policies != null && !policies.isEmpty() && policies.get(0).startsWith("file");
+    }
+
+    /**
+     * Tells if the given request as specified a validation
+     * policy to be applied by the validation process, indicated by URI by the user
+     * @param request The request to check the presence/indication of a validation policy
+     * @return The boolean
+     */
+    public boolean hasRemotePolicy(ValidationRequest request){
+        List<String> policies = request.getOptInp().getPolicy();
+        return policies != null && !policies.isEmpty() && !policies.get(0).contains("file");
+    }
+
+    /**
+     * Returns a byte array input stream to the policy file content
+     * @param request The request to get the local policy data
+     * @return The policy data as ByteArrayInputStream
+     */
+    public ByteArrayInputStream getLocalPolicyData(ValidationRequest request){
+        String policyKey = request.getOptInp().getPolicy().get(0);
+        String b64Policy = request.getAttachment().get(policyKey);
+        byte[] policyBytes = Base64.decode(b64Policy);
+        return new ByteArrayInputStream(policyBytes);
+    }
+
+    public URL getRemotePolicyURL(ValidationRequest request) throws MalformedURLException {
+        return new URL(request.getOptInp().getPolicy().get(0));
     }
 }

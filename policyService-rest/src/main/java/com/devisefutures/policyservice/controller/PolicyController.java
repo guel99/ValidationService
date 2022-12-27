@@ -67,6 +67,12 @@ public class PolicyController {
         return ResponseEntity.ok(policyStoreService.getPolicy(policyId));
     }
 
+    @GetMapping(value = "/xml/{policyId}")
+    @CrossOrigin(origins = "${webform.origin}")
+    public ResponseEntity<String> getPolicyXML(@PathVariable String policyId) throws IOException {
+        return ResponseEntity.ok(policyStoreService.getPolicyXML(policyId));
+    }
+
     @GetMapping(value = "/searchFor/{token}")
     @CrossOrigin(origins = "${webform.origin}")
     public ResponseEntity<List<RemotePolicyDTO>> search(@PathVariable String token){
@@ -76,11 +82,12 @@ public class PolicyController {
         sb.append(":");
         sb.append(this.serverPort);
         sb.append(this.policyApi);
+        sb.append("/xml");
         String source = sb.toString();
         List<RemotePolicyDTO> remotePolicyDTOs = policyStoreService.search(token);
         for(RemotePolicyDTO remotePolicyDTO : remotePolicyDTOs)
             remotePolicyDTO.setSource(source);
-        return ResponseEntity.ok(policyStoreService.search(token));
+        return ResponseEntity.ok(remotePolicyDTOs);
     }
 
     @GetMapping(value = "/connection/test")
