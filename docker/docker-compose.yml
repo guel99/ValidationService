@@ -1,0 +1,42 @@
+services:
+  signature-validator:
+    dns: 8.8.8.8
+    dns_opt:
+      - inet6
+    image: signature-validator:latest
+    ports:
+      - "8081:8081"
+    networks:
+      vs-network:
+        ipv4_address: 10.5.0.2
+    volumes:
+      - ../sign_cert:/sign_cert/
+
+  policy-service:
+    image: policy-service:latest
+    ports:
+      - "8080:8080"
+    networks:
+      vs-network:
+        ipv4_address: 10.5.0.3
+    volumes:
+      - policies:/data/
+
+  web-form:
+    image: val-service-web-form
+    ports:
+      - "4200:80"
+    networks:
+      vs-network:
+        ipv4_address: 10.5.0.4
+
+networks:
+  vs-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
+
+volumes:
+  policies:

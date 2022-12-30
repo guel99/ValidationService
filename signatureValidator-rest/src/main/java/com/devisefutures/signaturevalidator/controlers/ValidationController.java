@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
+import java.net.MalformedURLException;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -20,7 +21,8 @@ public class ValidationController {
 
     @PostMapping(value = "/validate", consumes = "application/json", produces = "application/json")
     @CrossOrigin(origins = "${webform.origin}")
-    public ResponseEntity<ValidationResponse> validateSignature(@Valid @RequestBody ValidationRequest validationRequest) throws MalformedRequestException, ValidationException {
+    public ResponseEntity<ValidationResponse> validateSignature(@Valid @RequestBody ValidationRequest validationRequest)
+            throws MalformedRequestException, ValidationException, MalformedURLException {
             return ResponseEntity.ok(validationService.validate(validationRequest));
     }
 

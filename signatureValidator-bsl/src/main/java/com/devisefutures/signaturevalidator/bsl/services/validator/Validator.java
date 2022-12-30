@@ -11,6 +11,9 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStream;
+import java.net.URL;
+
 /**
  * Element that performs the signature validation
  */
@@ -21,17 +24,53 @@ public class Validator {
     private TSLHandler tslHandler;
 
     /**
+     * Performs the validation of a dss document using the certificate sources
+     * given as parameter, applying the validation policy passed as parameter.
+     * @param toValidate The document to validate
+     * @param certificateSource The certificate source used in the X.509 validation building block.
+     *                          If the value passed is null, then the European LOTL is applyed.
+     * @param validationPolicy The validation policy to be used by the validation process.
+     *                         If the value passed in null, the default DSS validation policy is applyed.
+     * @return The validation reports
+     */
+    public Reports validate(DocumentValidator toValidate, CertificateSource certificateSource, InputStream validationPolicy){
+        CertificateVerifier certificateVerifier = getCustomCertificateVerifier();
+        if(certificateSource == null)
+            certificateSource = tslHandler.buildTrustedListsCertificateSource(TSLHandler.EUROPEAN_LOTL_URL);
+        certificateVerifier.setTrustedCertSources(certificateSource);
+
+        toValidate.setCertificateVerifier(certificateVerifier);
+        return validationPolicy == null ? toValidate.validateDocument() : toValidate.validateDocument(validationPolicy);
+    }
+
+    /**
+     * Performs the validation of a dss document using the certificate sources
+     * given as parameter, applying the validation policy stored in the given url
+     * @param toValidate The document to validate
+     * @param certificateSource The certificate source used in the X.509 validation building block.
+     *                          If the value passed is null, then the European LOTL is applyed.
+     * @param policyURL The url where is stored the validation policy to be used by the validation process.
+     *                  If the value passed in null, the default DSS validation policy is applyed.
+     * @return The validation reports
+     */
+    public Reports validate(DocumentValidator toValidate, CertificateSource certificateSource, URL policyURL){
+        CertificateVerifier certificateVerifier = getCustomCertificateVerifier();
+        if(certificateSource == null)
+            certificateSource = tslHandler.buildTrustedListsCertificateSource(TSLHandler.EUROPEAN_LOTL_URL);
+        certificateVerifier.setTrustedCertSources(certificateSource);
+
+        toValidate.setCertificateVerifier(certificateVerifier);
+        return policyURL == null ? toValidate.validateDocument() : toValidate.validateDocument(policyURL);
+    }
+
+    /**
      * Performs the validation of one dssdocument
      * @param toValidate The document to validate
      * @param certificateSource The certificates used in the signature validation process
      * @return Reports
      */
     public Reports validate(DocumentValidator toValidate, CertificateSource certificateSource){
-        CertificateVerifier certificateVerifier = getCustomCertificateVerifier();
-        certificateVerifier.setTrustedCertSources(certificateSource);
-
-        toValidate.setCertificateVerifier(certificateVerifier);
-        return toValidate.validateDocument();
+        return this.validate(toValidate, certificateSource, (InputStream) null);
     }
 
     /**
@@ -41,12 +80,7 @@ public class Validator {
      * @return
      */
     public Reports validate(DocumentValidator toValidate){
-        CertificateVerifier certificateVerifier = getCustomCertificateVerifier();
-        CertificateSource certificateSource = tslHandler.buildTrustedListsCertificateSource(TSLHandler.EUROPEAN_LOTL_URL);
-        certificateVerifier.setTrustedCertSources(certificateSource);
-
-        toValidate.setCertificateVerifier(certificateVerifier);
-        return toValidate.validateDocument();
+        return this.validate(toValidate, null);
     }
 
     /**

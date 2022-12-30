@@ -24,3 +24,5 @@ data/
 .mvn
 signatureValidator-bsl/target/
 signatureValidator-rest/target/
+docker/signatureValidator/*.jar
+docker/policyService/*.jar

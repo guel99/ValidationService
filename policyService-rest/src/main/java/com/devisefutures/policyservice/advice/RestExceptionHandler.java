@@ -1,5 +1,6 @@
 package com.devisefutures.policyservice.advice;
 
+import com.devisefutures.policyservice.bsl.exception.SearchTokenNotFound;
 import com.devisefutures.signaturevalidator.common.exceptions.InvalidPolicyCreationModeException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,5 +21,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleValidationError(Exception exc, WebRequest webRequest){
         return handleExceptionInternal(exc, ResponseEntity.badRequest().body(exc.getMessage()),
                 new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
+    }
+
+    @ExceptionHandler( SearchTokenNotFound.class )
+    public ResponseEntity<Object> handleNotFoundErrors(Exception exc, WebRequest webRequest){
+        return handleExceptionInternal(exc, ResponseEntity.status(HttpStatus.NOT_FOUND).body(exc.getMessage()),
+                new HttpHeaders(), HttpStatus.NOT_FOUND, webRequest);
     }
 }

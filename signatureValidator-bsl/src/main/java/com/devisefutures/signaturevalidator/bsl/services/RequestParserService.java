@@ -13,8 +13,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.bouncycastle.util.encoders.Base64;
@@ -22,6 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,7 +67,7 @@ public class RequestParserService {
                             .fromDocument(new InMemoryDocument(Base64.decode(inputDocuments.getDoc().get(0).getB64Data().getVal())));
                 } catch (UnsupportedOperationException e) { throw new MalformedRequestException(e.getMessage()); }
             }
-            if(inputDocuments.getNumDoc() == 1){
+            else if(inputDocuments.getNumDoc() == 1){
                 // Detached signature; sent original document (XAdES, CAdES, JAdES)
                 if (signatureObject == null)
                     throw new MalformedRequestException("No mandatory signature element for a detached signature");
@@ -73,7 +76,7 @@ public class RequestParserService {
                     processSingleDocumentDetached(inputDocuments, documentValidator);
                 } catch (UnsupportedOperationException e) { throw new MalformedRequestException(e.getMessage()); }
             }
-            if(inputDocuments.getNumDocHash() == 1){
+            else if(inputDocuments.getNumDocHash() == 1){
                 // Detached signature; the signed document DIGEST was sent separated from the signature (XAdES, CAdES, JAdES)
                 if(signatureObject == null)
                     throw new MalformedRequestException("No mandatory signature element for a detached signature");
@@ -115,11 +118,13 @@ public class RequestParserService {
      * @return The certificate source specified in the message
      */
     public CertificateSource getCertificateSource(OptionalInputs optInp){
-        CertificateSource certificateSource = new TrustedListsCertificateSource();
+        CertificateSource certificateSource = new CommonTrustedCertificateSource();
         if(optInp.getAddKeyInfo() != null) {
             for(AdditionalKeyInfoType keyInfo : optInp.getAddKeyInfo()) {
-                if(keyInfo.getCert() != null)
-                    certificateSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(keyInfo.getCert()));
+                if(keyInfo.getCert() != null) {
+                    String certificate = keyInfo.getCert().replace("\r\n", "");
+                    certificateSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(certificate));
+                }
             }
         }
         return certificateSource;
@@ -191,5 +196,54 @@ public class RequestParserService {
         detachedContent.add(dssDocument);
         signatureDoc.setDetachedContents(detachedContent);
         return signatureDoc;
+    }
+
+    /**
+     * Tells if the given request as specified a validation
+     * policy to be applied by the validation process
+     * @param request The request to check the presence/indication of a validation policy
+     * @return The boolean
+     */
+    public boolean hasPolicy(ValidationRequest request){
+        List<String> policies = request.getOptInp().getPolicy();
+        return policies != null && !policies.isEmpty();
+    }
+
+    /**
+     * Tells if the given request as specified a validation
+     * policy to be applied by the validation process, uploaded from the user's machine
+     * @param request The request to check the presence/indication of a validation policy
+     * @return The boolean
+     */
+    public boolean hasLocalPolicy(ValidationRequest request){
+        List<String> policies = request.getOptInp().getPolicy();
+        return policies != null && !policies.isEmpty() && policies.get(0).startsWith("file");
+    }
+
+    /**
+     * Tells if the given request as specified a validation
+     * policy to be applied by the validation process, indicated by URI by the user
+     * @param request The request to check the presence/indication of a validation policy
+     * @return The boolean
+     */
+    public boolean hasRemotePolicy(ValidationRequest request){
+        List<String> policies = request.getOptInp().getPolicy();
+        return policies != null && !policies.isEmpty() && !policies.get(0).contains("file");
+    }
+
+    /**
+     * Returns a byte array input stream to the policy file content
+     * @param request The request to get the local policy data
+     * @return The policy data as ByteArrayInputStream
+     */
+    public ByteArrayInputStream getLocalPolicyData(ValidationRequest request){
+        String policyKey = request.getOptInp().getPolicy().get(0);
+        String b64Policy = request.getAttachment().get(policyKey);
+        byte[] policyBytes = Base64.decode(b64Policy);
+        return new ByteArrayInputStream(policyBytes);
+    }
+
+    public URL getRemotePolicyURL(ValidationRequest request) throws MalformedURLException {
+        return new URL(request.getOptInp().getPolicy().get(0));
     }
 }
