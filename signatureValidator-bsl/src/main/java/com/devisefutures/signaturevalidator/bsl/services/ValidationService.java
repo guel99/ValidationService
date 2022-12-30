@@ -87,13 +87,13 @@ public class ValidationService {
             DSSDocument signedReportDocument;
 
             if(requestParserService.signReport(request)) {
-                signedReportDocument = signerReportService.signDocument(toBeSignedReport); // TODO - implement the signing of the ETSI report and include it in the next routine
+                signedReportDocument = signerReportService.signDocument(toBeSignedReport);
                 return responseAssemblerService.buildResponse(request.getReqID(), validationResult, signedReportDocument);
             }
             return responseAssemblerService.buildResponse(request.getReqID(), validationResult);
 
         } catch (JAXBException | IOException | SAXException e) {
-            throw new ValidationException("Error occured marshalling the etsiValidationReport object to a xml string");
+            throw new ValidationException("Error occured related with validation report emission: " + e.getMessage());
         }
 
     }
