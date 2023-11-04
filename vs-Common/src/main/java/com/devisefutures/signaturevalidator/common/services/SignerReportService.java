@@ -24,6 +24,9 @@ public class SignerReportService {
     @Value("${signer.keystore.filepath}")
     private String keyStoreFilePath;
 
+    @Value("${signer.keystore.secret}")
+    private String keyStorePwd;
+
     /**
      * Sign the given document using enveloped XAdES
      * @param toBeSignedDocument The xml document to be signed
@@ -53,7 +56,7 @@ public class SignerReportService {
         parameters.setSignKeyInfo(true);
 
         try(Pkcs12SignatureToken signingToken = new Pkcs12SignatureToken(keyStoreFilePath,
-                new KeyStore.PasswordProtection("validationService".toCharArray()))) {
+                new KeyStore.PasswordProtection(keyStorePwd.toCharArray()))) {
 
             DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
             parameters.setSigningCertificate(privateKey.getCertificate());
